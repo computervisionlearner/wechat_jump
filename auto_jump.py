@@ -1,8 +1,16 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jan  1 16:04:51 2018
+
+@author: no1
+"""
+
 import os
 import cv2
 import numpy as np
 import time
-from PIL import Image, ImageDraw
+
 
 # 使用的Python库及对应版本：
 # python 3.6
@@ -15,7 +23,7 @@ def get_screenshot(i):
     name = '{:05d}_{}'.format(i,int(time.time()))
     os.system('adb shell screencap -p /sdcard/{}.png'.format(name))
     os.system('adb pull /sdcard/{}.png images/{}.png'.format(name,name))
-    return os.path.join('images',name+'.png')
+    return name
 
 
 def jump(distance):
@@ -29,7 +37,6 @@ def find_center(img1):
   H,W = img1.shape
   img1 = cv2.GaussianBlur(img1, (5, 5), 0)
   canny_img = cv2.Canny(img1, 1, 10)
-  cv2.imwrite('test.png',canny_img)
   for row in range(300,H):
     for col in range(W//8,W):
       if canny_img[row,col] !=0 :
@@ -54,7 +61,8 @@ if __name__ == '__main__':
   # 循环直到游戏失败结束
   for i in range(10000):
       name = get_screenshot(i)
-      img_rgb = cv2.imread(name)
+      path = os.path.join('images',name+'.png')
+      img_rgb = cv2.imread(path)
       img_gray = cv2.cvtColor(img_rgb,cv2.COLOR_BGR2GRAY)
   
       # 如果在游戏截图中匹配到带"再玩一局"字样的模板，则循环中止
@@ -79,12 +87,12 @@ if __name__ == '__main__':
       else:
           img_gray[int(max_loc1[1]-2):int(max_loc1[1]+189),int(max_loc1[0]-2):int(max_loc1[0]+77)] =0
           row, x = find_center(img_gray)
-          
           y = y1 - np.sqrt(3)/3 * np.abs(x1 -x)
+          center2_loc = (int(x),int(y))
       # 将图片输出以供调试
-      img_rgb = cv2.circle(img_gray, (int(x), int(y)), 10, 255, -1)
+      img_gray = cv2.line(img_gray,center1_loc,center2_loc,255,3)
       # cv2.rectangle(canny_img, max_loc1, center1_loc, 255, 2)
-      cv2.imwrite('last.png', img_gray)
+      cv2.imwrite('images/{}_last.png'.format(name), img_gray)
   
       distance = (center1_loc[0] - x) ** 2 + (center1_loc[1] - y) ** 2
       distance = distance ** 0.5
