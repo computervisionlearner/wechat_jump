@@ -49,7 +49,7 @@ w2, h2 = temp_white_circle.shape[::-1]
 # 循环直到游戏失败结束
 for i in range(10000):
     get_screenshot(0)
-    time.sleep(1.3)
+
     img_rgb = cv2.imread('{}.png'.format(0))
     img_gray = cv2.cvtColor(img_rgb,cv2.COLOR_BGR2GRAY)
 
@@ -73,6 +73,7 @@ for i in range(10000):
         print('found white circle!')
         x, y = max_loc2[0] + w2 // 2, max_loc2[1] + h2 // 2
     else:
+        img_gray[int(max_loc1[1]-2):int(max_loc1[1]+189),int(max_loc1[0]-2):int(max_loc1[0]+77)]
         row, x = find_center(img_gray)
         
         y = y1 - np.sqrt(3)/3 * np.abs(x1 -x)
