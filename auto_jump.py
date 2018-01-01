@@ -73,7 +73,7 @@ for i in range(10000):
         print('found white circle!')
         x, y = max_loc2[0] + w2 // 2, max_loc2[1] + h2 // 2
     else:
-        img_gray[int(max_loc1[1]-2):int(max_loc1[1]+189),int(max_loc1[0]-2):int(max_loc1[0]+77)]
+        img_gray[int(max_loc1[1]-2):int(max_loc1[1]+189),int(max_loc1[0]-2):int(max_loc1[0]+77)] =0
         row, x = find_center(img_gray)
         
         y = y1 - np.sqrt(3)/3 * np.abs(x1 -x)
